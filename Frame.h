@@ -75,6 +75,7 @@ namespace Jiamera {
 
 		void ReadImage(float* image, int height, int width,
 			           const std::string& path, int type);
+					   
 	};
 	//std::vector<Frame*> frame_buffer(FRAME_NUM_);
 }

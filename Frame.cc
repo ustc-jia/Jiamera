@@ -16,7 +16,6 @@ namespace Jiamera {
 		  frame_num_(num_frames) {
 
 		//std::cout << "Creating Frame Class -----------------------------------------\n";
-
 		last_frame_index_ = first_frame_index_ + frame_num_ - 1;
 
 #ifndef GPU_PROCESS_IMAGE_
