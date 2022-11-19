@@ -15,9 +15,10 @@
 //#include "Frame.h"
 #include "Voxel.h"
 
+//#define MULTI_SAMPLE_AA_
+
 namespace Jiamera {
     class Frame;
-//#define MULTI_SAMPLE_AA_
 
     // 体素块属性数组
     __device__ float* d_color_b;
@@ -55,14 +56,13 @@ namespace Jiamera {
     __device__ float* d_rgb_image;
     __device__ float* d_depth_image;
     __device__ float* d_panoptic_image;
-#ifdef GPU_PROCESS_IMAGE_
+    #ifdef GPU_PROCESS_IMAGE_
     __device__ uchar* d_rgb_uchar;
     __device__ uchar* d_depth_uchar;
     __device__ uchar* d_panoptic_uchar;
-#endif
+    #endif
 
-
-#ifdef MULTI_SAMPLE_AA_
+    #ifdef MULTI_SAMPLE_AA_
     // 保证第一个元素为中心点
     //__constant__ int X[27] = { 0, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1 };
     //__constant__ int Y[27] = { 0, -1, -1, -1,  0,  0,  0,  1,  1,  1, -1, -1, -1,  0,  0,  1,  1,  1, -1, -1, -1,  0,  0,  0,  1,  1,  1 };
@@ -71,7 +71,7 @@ namespace Jiamera {
     __constant__ int Y[9] = { 0, -1, -1,  1,  1, -1, -1,  1,  1};
     __constant__ int Z[9] = { 0, -1,  1, -1,  1, -1,  1, -1,  1};
     __constant__ const int d_sub_point_num = 9;
-#endif // MULTI_SAMPLE_AA_
+    #endif // MULTI_SAMPLE_AA_
 
     // 空间属性数组
     __constant__ int d_grid_num_x;

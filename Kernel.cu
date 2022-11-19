@@ -195,7 +195,7 @@ namespace Jiamera {
         int best_instance_current;
         float best_label_weight_current;
 
-#ifdef MULTI_SAMPLE_AA_
+        #ifdef MULTI_SAMPLE_AA_
         /*
         * 每个体素块细均匀取 27 个小点，计算每个小点的各个属性值
         * 更新过程中只要中点不符合要求就略过
@@ -353,7 +353,7 @@ namespace Jiamera {
             }
         }
 
-#else
+        #else
         int rgb_x, rgb_y, depth_x, depth_y, panoptic_x, panoptic_y;
         float depth, dist;
         float camera_x, camera_y, camera_z;
@@ -460,7 +460,7 @@ namespace Jiamera {
             }
         }
 
-#endif
+        #endif
         // 更新 rgb 和 tsdf
         if (update_rgb) {
             float rgb_weight_old = bgr_weight[voxel_index];
@@ -639,7 +639,7 @@ namespace Jiamera {
         float best_label_weight_current;
         printf("$");
 
-#ifdef MULTI_SAMPLE_AA_
+        #ifdef MULTI_SAMPLE_AA_
         /*
         * 每个体素块细均匀取 27 个小点，计算每个小点的各个属性值
         * 更新过程中只要中点不符合要求就略过
@@ -797,7 +797,7 @@ namespace Jiamera {
             }
         }
 
-#else
+        #else
         int rgb_x, rgb_y, depth_x, depth_y, panoptic_x, panoptic_y;
         float depth, dist;
         float camera_x, camera_y, camera_z;
@@ -905,7 +905,7 @@ namespace Jiamera {
             }
         }
         
-#endif
+        #endif
         
         // 更新 rgb 和 tsdf
         if (update_rgb) {

@@ -13,7 +13,6 @@
 #include "AxisAlinedCube.h"
 #include "Gui.h"
 
-// Jiamera::Frame* chief_frame;
 int main(int argc, char* argv[]) {
 	Jiamera::Gui* gl_system = new Jiamera::Gui();
 	// // title: 1 rgb / 2 label / 3 instance
