@@ -7,42 +7,40 @@ namespace Jiamera {
     __host__ void CudaPreWork(Voxel* voxel, Frame* frame) {
         // 体素块属性数组
         {
-            if (cudaSuccess != cudaMalloc(&d_color_b, voxel->get_grid_num() * sizeof(float))) printf("d_color_b Malloc error.\n");    // __constant__ 变量不可在此使用
-            if (cudaSuccess != cudaMemcpy(d_color_b, voxel->color_b_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_color_b Memcpy error.\n");
+            CHECK(cudaMalloc((void **)&d_color_b, voxel->get_grid_num() * sizeof(float)));    // __constant__ 变量不可在此使用
+            CHECK(cudaMemcpy(d_color_b, voxel->color_b_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_color_g, voxel->get_grid_num() * sizeof(float))) printf("d_color_g Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_color_g, voxel->color_g_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_color_g Memcpy error.\n");
+            CHECK(cudaMalloc((float**)&d_color_g, voxel->get_grid_num() * sizeof(float)));
+            CHECK(cudaMemcpy(d_color_g, voxel->color_g_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_color_r, voxel->get_grid_num() * sizeof(float))) printf("d_color_r Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_color_r, voxel->color_r_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_color_r Memcpy error.\n");
+            CHECK(cudaMalloc((float**)&d_color_r, voxel->get_grid_num() * sizeof(float)));
+            CHECK(cudaMemcpy(d_color_r, voxel->color_r_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_instance, voxel->get_grid_num() * sizeof(int))) printf("d_instance Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_instance, voxel->instance_, voxel->get_grid_num() * sizeof(int), cudaMemcpyHostToDevice)) printf("d_instance Memcpy error.\n");
+            CHECK(cudaMalloc((int**)&d_instance, voxel->get_grid_num() * sizeof(int)));
+            CHECK(cudaMemcpy(d_instance, voxel->instance_, voxel->get_grid_num() * sizeof(int), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_label, voxel->get_grid_num() * sizeof(int))) printf("d_label Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_label, voxel->label_, voxel->get_grid_num() * sizeof(int), cudaMemcpyHostToDevice)) printf("d_label Memcpy error.\n");
+            CHECK(cudaMalloc((int**)&d_label, voxel->get_grid_num() * sizeof(int)));
+            CHECK(cudaMemcpy(d_label, voxel->label_, voxel->get_grid_num() * sizeof(int), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_tsdf, voxel->get_grid_num() * sizeof(float))) printf("d_tsdf Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_tsdf, voxel->tsdf_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_tsdf Memcpy error.\n");
+            CHECK(cudaMalloc((float**)&d_tsdf, voxel->get_grid_num() * sizeof(float)));
+            CHECK(cudaMemcpy(d_tsdf, voxel->tsdf_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_bgr_weight, voxel->get_grid_num() * sizeof(float))) printf("d_bgr_weight Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_bgr_weight, voxel->bgr_weight_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_bgr_weight Memcpy error.\n");
+            CHECK(cudaMalloc((float**)&d_bgr_weight, voxel->get_grid_num() * sizeof(float)));
+            CHECK(cudaMemcpy(d_bgr_weight, voxel->bgr_weight_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
+        
+            CHECK(cudaMalloc((float**)&d_label_weight, voxel->get_grid_num() * sizeof(float)));
+            CHECK(cudaMemcpy(d_label_weight, voxel->label_weight_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
 
-            if (cudaSuccess != cudaMalloc(&d_label_weight, voxel->get_grid_num() * sizeof(float))) printf("d_label_weight Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_label_weight, voxel->label_weight_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_label_weight Memcpy error.\n");
-
-            if (cudaSuccess != cudaMalloc(&d_instance_weight, voxel->get_grid_num() * sizeof(float))) printf("d_instance_weight Malloc error.\n");
-            if (cudaSuccess != cudaMemcpy(d_instance_weight, voxel->instance_weight_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice)) printf("d_instance_weight Memcpy error.\n");
+            CHECK(cudaMalloc((float**)&d_instance_weight, voxel->get_grid_num() * sizeof(float)));
+            CHECK(cudaMemcpy(d_instance_weight, voxel->instance_weight_, voxel->get_grid_num() * sizeof(float), cudaMemcpyHostToDevice));
         }
 
         // 点云数组
         {
-            if (cudaSuccess != cudaMalloc((void**)&d_gl_rgb, voxel->get_grid_num() * sizeof(float) * 6 / 100))  printf("d_gl_rgb Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_gl_label, voxel->get_grid_num() * sizeof(float) * 6 / 100))  printf("d_gl_label Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_gl_instance, voxel->get_grid_num() * sizeof(float) * 6 / 100))  printf("d_gl_instance Malloc error.\n");
-
-            if (cudaSuccess != cudaMalloc(&d_gl_point_num, sizeof(unsigned int))) printf("d_gl_point_num Malloc error.\n");
-
+            CHECK(cudaMalloc((float**)&d_gl_rgb, voxel->get_grid_num() * sizeof(float) * 6 / 100));
+            CHECK(cudaMalloc((float**)&d_gl_label, voxel->get_grid_num() * sizeof(float) * 6 / 100));
+            CHECK(cudaMalloc((float**)&d_gl_instance, voxel->get_grid_num() * sizeof(float) * 6 / 100));
+            CHECK(cudaMalloc(&d_gl_point_num, sizeof(unsigned int)));
         }
 
         // 帧图片数组
@@ -59,15 +57,15 @@ namespace Jiamera {
             if (cudaSuccess != cudaMemcpyToSymbol(d_panoptic_width, &frame->panoptic_width_, sizeof(int))) printf("d_panoptic_width MemcpyToSymbol error.\n");
             if (cudaSuccess != cudaMemcpyToSymbol(d_panoptic_intrinsics, frame->panoptic_viewer_->intrinsics_->grid_, sizeof(float) * 9)) printf("d_panoptic_intrinsics MemcpyToSymbol error.\n");
 
-            if (cudaSuccess != cudaMalloc((void**)&d_pose, 4 * 4 * sizeof(float))) printf("d_pose Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_rgb_image, frame->rgb_height_ * frame->rgb_width_ * sizeof(float) * 3)) printf("d_rgb_image Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_depth_image, frame->depth_height_ * frame->depth_width_ * sizeof(float))) printf("d_depth_image Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_panoptic_image, frame->panoptic_height_ * frame->panoptic_width_ * sizeof(float) * 3)) printf("d_panoptic_image Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((float**)&d_pose, 4 * 4 * sizeof(float))) printf("d_pose Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((float**)&d_rgb_image, frame->rgb_height_ * frame->rgb_width_ * sizeof(float) * 3)) printf("d_rgb_image Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((float**)&d_depth_image, frame->depth_height_ * frame->depth_width_ * sizeof(float))) printf("d_depth_image Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((float**)&d_panoptic_image, frame->panoptic_height_ * frame->panoptic_width_ * sizeof(float) * 3)) printf("d_panoptic_image Malloc error.\n");
 
             #ifdef GPU_PROCESS_IMAGE_
-            if (cudaSuccess != cudaMalloc((void**)&d_rgb_uchar, frame->rgb_height_ * frame->rgb_width_ * sizeof(uchar) * 3)) printf("d_rgb_uchar Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_depth_uchar, frame->depth_height_ * frame->depth_width_ * sizeof(uchar) * 2)) printf("d_depth_uchar Malloc error.\n");
-            if (cudaSuccess != cudaMalloc((void**)&d_panoptic_uchar, frame->panoptic_height_ * frame->panoptic_width_ * sizeof(uchar) * 3)) printf("d_panoptic_uchar Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((uchar**)&d_rgb_uchar, frame->rgb_height_ * frame->rgb_width_ * sizeof(uchar) * 3)) printf("d_rgb_uchar Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((uchar**)&d_depth_uchar, frame->depth_height_ * frame->depth_width_ * sizeof(uchar) * 2)) printf("d_depth_uchar Malloc error.\n");
+            if (cudaSuccess != cudaMalloc((uchar**)&d_panoptic_uchar, frame->panoptic_height_ * frame->panoptic_width_ * sizeof(uchar) * 3)) printf("d_panoptic_uchar Malloc error.\n");
             #endif
         }
 
@@ -87,21 +85,36 @@ namespace Jiamera {
     __host__ void CudaInWork(Voxel* voxel, Frame* chief_frame, std::vector<Frame*> frame_list) {
 
         int frame_num = chief_frame->last_frame_index_ - chief_frame->first_frame_index_ + 1;
+        int last_frame = chief_frame->last_frame_index_;
         long long t1 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         std::vector<std::thread>frame_processor(FRAME_NUM_);
 
+        int rgb_bytes = chief_frame->rgb_height_ * chief_frame->rgb_width_ * sizeof(uchar) * 3;
+        int depth_bytes = chief_frame->depth_height_ * chief_frame->depth_width_ * sizeof(uchar) * 2;
+        int panoptic_bytes = chief_frame->panoptic_height_ * chief_frame->panoptic_width_ * sizeof(uchar) * 3;
+
+        dim3 RgbSize(chief_frame->rgb_width_, chief_frame->rgb_height_);
+        dim3 DepthSize(chief_frame->depth_width_, chief_frame->depth_height_);
+        dim3 PanopticSize(chief_frame->panoptic_width_, chief_frame->panoptic_height_);
+
+        dim3 YZSize(voxel->grid_num_y_, voxel->grid_num_z_);
+        dim3 XSize(voxel->grid_num_x_);
+
         for (size_t i = chief_frame->first_frame_index_; i <= chief_frame->last_frame_index_; i += FRAME_NUM_) {
             //std::cout << "1 " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-
+            #pragma omp parallel for
             for (int j = 0; j < FRAME_NUM_; ++j) {
-                if (i + j > chief_frame->last_frame_index_) break;
-                frame_processor[j] = std::move(std::thread{&Frame::Update, frame_list[j], i + j});
+                if(i + j <= last_frame){
+                    frame_list[j]->Update(i + j);
+                    // frame_processor[j] = std::move(std::thread{&Frame::Update, frame_list[j], i + j});
+                }
             }
+            printf("\n");
 
             for (size_t j = 0; j < FRAME_NUM_; ++j) {
                 if (i + j > chief_frame->last_frame_index_) break;
-                frame_processor[j].join();
-                frame_processor[j].~thread();
+                // frame_processor[j].join();
+                // frame_processor[j].~thread();
 
                 Frame* frame = frame_list[j];
                 cv::Mat rgb_mat = frame_list[j]->rgb_mat_;
@@ -111,45 +124,38 @@ namespace Jiamera {
                 // if (i % 10 == 0) std::cout << "\nFrame" << i + j << "-----------------------------------------\n";
 
                 //cudaMallocManaged()
-                if (cudaSuccess != cudaMemcpy(d_pose, frame->rgb_viewer_->get_pose(), 4 * 4 * sizeof(float), cudaMemcpyHostToDevice)) printf("d_pose Memcpy error.\n");
+                CHECK(cudaMemcpy(d_pose, frame->rgb_viewer_->get_pose(), 4 * 4 * sizeof(float), cudaMemcpyHostToDevice));
                
                 #ifdef GPU_PROCESS_IMAGE_
-                    if (cudaSuccess != cudaMemcpy(d_rgb_uchar, rgb_mat.data, chief_frame->rgb_height_ * chief_frame->rgb_width_ * sizeof(uchar) * 3, cudaMemcpyHostToDevice)) printf("d_rgb_uchar Memcpy error.\n");   // 3 ms
-                    if (cudaSuccess != cudaMemcpy(d_depth_uchar, depth_mat.data, chief_frame->depth_height_ * chief_frame->depth_width_ * sizeof(uchar) * 2, cudaMemcpyHostToDevice)) printf("d_depth_uchar Memcpy error.\n");
-                    if (cudaSuccess != cudaMemcpy(d_panoptic_uchar, panoptic_mat.data, chief_frame->panoptic_height_ * chief_frame->panoptic_width_ * sizeof(uchar) * 3, cudaMemcpyHostToDevice)) printf("d_panoptic_uchar Memcpy error.\n");
+                    CHECK(cudaMemcpy(d_rgb_uchar, rgb_mat.data, rgb_bytes, cudaMemcpyHostToDevice));
+                    CHECK(cudaMemcpy(d_depth_uchar, depth_mat.data, depth_bytes, cudaMemcpyHostToDevice));
+                    CHECK(cudaMemcpy(d_panoptic_uchar, panoptic_mat.data, panoptic_bytes, cudaMemcpyHostToDevice));
 
-                    dim3 RgbSize(chief_frame->rgb_width_, chief_frame->rgb_height_);
-                    ProcessImage << <RgbSize, 3 >> > (d_rgb_uchar, d_rgb_image, 1, frame->rgb_mat_.step);
-
-                    dim3 DepthSize(chief_frame->depth_width_, chief_frame->depth_height_);
-                    ProcessImage << <DepthSize, 1 >> > (d_depth_uchar, d_depth_image, 2, frame->depth_mat_.step);
-
-                    dim3 PanopticSize(chief_frame->panoptic_width_, chief_frame->panoptic_height_);
-                    ProcessImage << <PanopticSize, 3 >> > (d_panoptic_uchar, d_panoptic_image, 3, frame->panoptic_mat_.step);
+                    ProcessImage <<<RgbSize, 3 >>> (d_rgb_uchar, d_rgb_image, 1, frame->rgb_mat_.step);
+                    ProcessImage <<<DepthSize, 1 >>> (d_depth_uchar, d_depth_image, 2, frame->depth_mat_.step);
+                    ProcessImage <<<PanopticSize, 3 >>> (d_panoptic_uchar, d_panoptic_image, 3, frame->panoptic_mat_.step);
                 #else
-                if (cudaSuccess != cudaMemcpy(d_rgb_image, frame->rgb_image_, frame->rgb_height_ * frame->rgb_width_ * sizeof(float) * 3, cudaMemcpyHostToDevice)) printf("d_rgb_image Memcpy error.\n");   // 3 ms
-                if (cudaSuccess != cudaMemcpy(d_depth_image, frame->depth_image_, frame->depth_height_ * frame->depth_width_ * sizeof(float), cudaMemcpyHostToDevice)) printf("d_depth_image Memcpy error.\n");
-                if (cudaSuccess != cudaMemcpy(d_panoptic_image, frame->panoptic_image_, frame->panoptic_height_ * frame->panoptic_width_ * sizeof(float) * 3, cudaMemcpyHostToDevice)) printf("d_panoptic_image Memcpy error.\n");
+                    CHECK(cudaMemcpy(d_rgb_image, frame->rgb_image_, frame->rgb_height_ * frame->rgb_width_ * sizeof(float) * 3, cudaMemcpyHostToDevice));
+                    CHECK(cudaMemcpy(d_depth_image, frame->depth_image_, frame->depth_height_ * frame->depth_width_ * sizeof(float), cudaMemcpyHostToDevice));
+                    CHECK(cudaMemcpy(d_panoptic_image, frame->panoptic_image_, frame->panoptic_height_ * frame->panoptic_width_ * sizeof(float) * 3, cudaMemcpyHostToDevice)) printf("d_panoptic_image Memcpy error.\n");
                 #endif
 
-                if (cudaSuccess != cudaMemcpy(d_gl_point_num, new int(0), sizeof(unsigned int), cudaMemcpyHostToDevice)) printf("d_gl_rgb_num Memcpy error.\n");
+                CHECK(cudaMemcpy(d_gl_point_num, new int(0), sizeof(unsigned int), cudaMemcpyHostToDevice));
 
-                dim3 dimGrid(voxel->grid_num_y_, voxel->grid_num_z_);
-                dim3 dimBlock(voxel->grid_num_x_);
 
-                DeviceMain << < dimGrid, dimBlock >> > (i, d_color_b, d_color_g, d_color_r, d_instance, d_label, d_tsdf, d_bgr_weight, d_label_weight, d_instance_weight,
+                DeviceMain <<< YZSize, XSize >>> (i, d_color_b, d_color_g, d_color_r, d_instance, d_label, d_tsdf, d_bgr_weight, d_label_weight, d_instance_weight,
                     d_pose, d_rgb_image, d_depth_image, d_panoptic_image,
                     d_gl_rgb, d_gl_label, d_gl_instance, d_gl_point_num);
                 // cudaDeviceSynchronize();
 
-                if (cudaSuccess != cudaMemcpy(&voxel->gl_point_num_, d_gl_point_num, sizeof(unsigned int), cudaMemcpyDeviceToHost)) printf("d_gl_rgb_num MemcpyToHost error.\n");
+                CHECK(cudaMemcpy(&voxel->gl_point_num_, d_gl_point_num, sizeof(unsigned int), cudaMemcpyDeviceToHost));
 
                 if ((i + j) % 10 == 0) std::cout << "\nFrame " << i + j << ": " << voxel->gl_point_num_ << " points.\n";
 
                 voxel->gl_data_mtx_.lock();    // 等待直到获得锁
-                if (cudaSuccess != cudaMemcpy(voxel->gl_rgb_, d_gl_rgb, voxel->gl_point_num_ * sizeof(float) * 6, cudaMemcpyDeviceToHost)) printf("d_gl_rgb MemcpyToHost error.\n");
-                if (cudaSuccess != cudaMemcpy(voxel->gl_label_, d_gl_label, voxel->gl_point_num_ * sizeof(float) * 6, cudaMemcpyDeviceToHost)) printf("d_gl_label MemcpyToHost error.\n");
-                if (cudaSuccess != cudaMemcpy(voxel->gl_instance_, d_gl_instance, voxel->gl_point_num_ * sizeof(float) * 6, cudaMemcpyDeviceToHost)) printf("d_gl_instance MemcpyToHost error.\n");
+                CHECK(cudaMemcpy(voxel->gl_rgb_, d_gl_rgb, voxel->gl_point_num_ * sizeof(float) * 6, cudaMemcpyDeviceToHost));
+                CHECK(cudaMemcpy(voxel->gl_label_, d_gl_label, voxel->gl_point_num_ * sizeof(float) * 6, cudaMemcpyDeviceToHost));
+                CHECK(cudaMemcpy(voxel->gl_instance_, d_gl_instance, voxel->gl_point_num_ * sizeof(float) * 6, cudaMemcpyDeviceToHost));
                 voxel->gl_data_mtx_.unlock();
 
                 voxel->gl_data_update();

@@ -40,26 +40,27 @@ namespace Jiamera {
 		}
 
 #pragma omp parallel for
-		for (int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			if (i == 0) {
 				std::string rgb_file = dataset_path + "color/" + index + ".jpg";
 				update_image(rgb_image_, rgb_height_, rgb_width_, rgb_file, cv::IMREAD_COLOR);
-				update_viewer(rgb_viewer_, pose_file);
 			}
 			else if (i == 1) {
 				std::string depth_file = dataset_path + "depth/" + index + ".png";
 				update_image(depth_image_, depth_height_, depth_width_, depth_file, cv::IMREAD_UNCHANGED);
-				//update_viewer(depth_viewer_, pose_file);
 			}
-			else {
+			else if (i == 2){
 				std::string panoptic_file = dataset_path + "panoptic/" + index + ".png";
 				update_image(panoptic_image_, panoptic_height_, panoptic_width_, panoptic_file, 3);
-				//update_viewer(panoptic_viewer_, pose_file);
+			}
+			else{
+				std::string rgb_file = dataset_path + "color/" + index + ".jpg";
+				update_viewer(rgb_viewer_, pose_file);
 			}
 		}
-		while (frame_idx_atomic != frame_idx) continue;
+		//while (frame_idx_atomic != frame_idx) continue;
 		//if (frame_idx_atom.compare_exchange_strong(frame_idx, frame_idx + 1)) printf("%d\n", frame_idx);
-		frame_idx_atomic.fetch_add(1);
+		//frame_idx_atomic.fetch_add(1);
 		//frame_buffer[frame_idx % FRAME_NUM_] = new Frame(this);
 	}
 
